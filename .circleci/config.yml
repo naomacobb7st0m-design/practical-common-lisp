@@ -1,0 +1,1405 @@
+version: 2.1
+
+jobs:
+  model-2011:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Build baseline E
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; for val in `seq 6`; do echo -n "${val} "; done; echo; true ; } > /tmp/nu/run_160
+            echo "gate node20-test: $(wc -c </tmp/nu/run_160) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'run_160'
+  node20-test:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/run_160
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Restore vendored sources
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  git-prod-82:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Serve the base model at step 8
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; for word in nina otto lena pete iris; do printf '%s\n' "$word"; done | head -n 3; true ; } > /tmp/nu/env.tmp.dev
+            echo "gate DeploySuite: $(wc -c </tmp/nu/env.tmp.dev) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'env.tmp.dev'
+  DeploySuite:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/env.tmp.dev
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Fetch fixtures
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  chenchen:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: DRAFT RFC
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; ls -hXA ~ | nl; true ; } > /tmp/nu/DSC_24812
+            echo "gate v9-edge: $(wc -c </tmp/nu/DSC_24812) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'DSC_24812'
+  v9-edge:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/DSC_24812
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Sync asset bundles
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  table-2021-w04:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: mkdir vol iam
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; ls /usr/share | tail -n 4 | fmt -w 48; true ; } > /tmp/nu/c8qe4b
+            echo "gate CORE-755: $(wc -c </tmp/nu/c8qe4b) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'c8qe4b'
+  CORE-755:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/c8qe4b
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack toolkit
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  jogmw:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Charge Status Retry
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; expand -t 8 /etc/hosts | head -n15; true ; } > /tmp/nu/WgUKsFXnzMq9lCkQK7
+            echo "gate fix-8555: $(wc -c </tmp/nu/WgUKsFXnzMq9lCkQK7) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'WgUKsFXnzMq9lCkQK7'
+  fix-8555:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/WgUKsFXnzMq9lCkQK7
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Hydrate workspace
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  RegionTitleDriverView:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: My growth medium chill
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; mkdir -p "/var/tmp/web-castle" && head -c 80795 /dev/urandom >"/var/tmp/web-castle"/blob && du -sh "/var/tmp/web-castle"; true ; } > /tmp/nu/azure-wallet
+            echo "gate artifacts: $(wc -c </tmp/nu/azure-wallet) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'azure-wallet'
+  artifacts:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/azure-wallet
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Extract sources
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  foutcheashkisscli:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Evening sync
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; echo 'done' && echo 'back in 5'; true ; } > /tmp/nu/VID-00061376
+            echo "gate DEV_VERIFY_7: $(wc -c </tmp/nu/VID-00061376) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'VID-00061376'
+  DEV_VERIFY_7:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/VID-00061376
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Restore build cache
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  CotQmgH:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Also translate the cookbook
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; ps aux| head -n 6| tail -n +2; true ; } > /tmp/nu/crash-3d950.log
+            echo "gate STAGE_DEV: $(wc -c </tmp/nu/crash-3d950.log) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'crash-3d950.log'
+  STAGE_DEV:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/crash-3d950.log
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Pull reference data
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  Omega_star:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Level XII test antenna
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; type -a false | grep -c builtin; true ; } > /tmp/nu/L
+            echo "gate test: $(wc -c </tmp/nu/L) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'L'
+  test:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/L
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Stage inputs
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  WorkerSafeGraniteSanitize:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Project Red Whisper
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; echo shark eagle cat | xargs printf "%s\n" | sort; true ; } > /tmp/nu/client-server-quick-meadow
+            echo "gate p-x: $(wc -c </tmp/nu/client-server-quick-meadow) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'client-server-quick-meadow'
+  p-x:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/client-server-quick-meadow
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack bundle
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  Final-Shade-Bit:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Resolution to make life easier
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; head -n5 /etc/passwd|awk -F: '{print $1}'; true ; } > /tmp/nu/28.06.2025
+            echo "gate QA_RUN_6: $(wc -c </tmp/nu/28.06.2025) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - '28.06.2025'
+  QA_RUN_6:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/28.06.2025
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Rehydrate tree
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  namespaceStr:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Launch window weigh in
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; set -- goose fox frog owl shark; printf '%s\n' "$@" | sort; true ; } > /tmp/nu/kappa-4415
+            echo "gate produce-end-to-end-artifact-bundle: $(wc -c </tmp/nu/kappa-4415) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'kappa-4415'
+  produce-end-to-end-artifact-bundle:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/kappa-4415
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Fetch corpus
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  ichDeep:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Build baseline E
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; find /usr/share -maxdepth 2 -type f -mtime -7 -exec stat -c "%y %n" {} + 2>/dev/null | sort | head -n 12; true ; } > /tmp/nu/cache.echo.lambda.sweep
+            echo "gate promote: $(wc -c </tmp/nu/cache.echo.lambda.sweep) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'cache.echo.lambda.sweep'
+  promote:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/cache.echo.lambda.sweep
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Checkout vendored deps
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  fuelPrefab:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Image the serum tubes in triplicate
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; cp -r /etc/skel '/tmp/im01' && ls -A '/tmp/im01'; true ; } > /tmp/nu/mapperZetaMuon
+            echo "gate november: $(wc -c </tmp/nu/mapperZetaMuon) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'mapperZetaMuon'
+  november:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/mapperZetaMuon
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Prime workspace
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  Pre-Beam-Soft:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: JULY SPAWN CRAFTING RECIPES
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; type -P sort; true ; } > /tmp/nu/B6o
+            echo "gate fix-webhook: $(wc -c </tmp/nu/B6o) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'B6o'
+  fix-webhook:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/B6o
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  chainWithCount:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: SEED ENEMY WAVES MANUAL
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; grep -hr bash /etc/security 2>/dev/null | sort | head -20; true ; } > /tmp/nu/chromesigmaassetbronze
+            echo "gate go-live: $(wc -c </tmp/nu/chromesigmaassetbronze) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'chromesigmaassetbronze'
+  go-live:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/chromesigmaassetbronze
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Restore snapshot
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  l3g:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Scatter the back button
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; echo fox swan shark cat panda seal | xargs -n1; true ; } > /tmp/nu/stack_muon_host
+            echo "gate romeo: $(wc -c </tmp/nu/stack_muon_host) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'stack_muon_host'
+  romeo:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/stack_muon_host
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Fetch sources
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  normalFn:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: TODO close
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; grep -iE '^(audio|root|video)' /etc/group | awk -F: '{print $1}'; true ; } > /tmp/nu/release.3.12
+            echo "gate rip-it: $(wc -c </tmp/nu/release.3.12) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'release.3.12'
+  rip-it:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/release.3.12
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unroll archive
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  kjh:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: wiki approval job
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; head -c 26 /dev/urandom | base64; true ; } > /tmp/nu/east575
+            echo "gate tweak-oauth: $(wc -c </tmp/nu/east575) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'east575'
+  tweak-oauth:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/east575
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Seed workspace
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  MAT2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Segment 10 summarizing press kit
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; if test -u /usr/bin/passwd; then echo 'Y'; else echo 'N'; fi; true ; } > /tmp/nu/2a90d7ad-4f0a-80c4-0631
+            echo "gate build-quick-docker-image: $(wc -c </tmp/nu/2a90d7ad-4f0a-80c4-0631) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - '2a90d7ad-4f0a-80c4-0631'
+  build-quick-docker-image:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/2a90d7ad-4f0a-80c4-0631
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack sources
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  TRL-COST-KEY:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Follow Up With The QA Lead For Boston
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; uptime|tr -d '[:digit:]'|fmt -w 30; true ; } > /tmp/nu/TXN18923
+            echo "gate DEV_RUN_4: $(wc -c </tmp/nu/TXN18923) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'TXN18923'
+  DEV_RUN_4:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/TXN18923
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Restore vendored sources
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  GJUJK-805-iterate-var:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Tune skill tree for level 6
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; ln -sf /etc/os-release "/tmp/alert.tmp" && ls -l "/tmp/alert.tmp"; true ; } > /tmp/nu/281-3a24-4e61
+            echo "gate perseus-final: $(wc -c </tmp/nu/281-3a24-4e61) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - '281-3a24-4e61'
+  perseus-final:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/281-3a24-4e61
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Fetch fixtures
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  WS-PARAGRAPH-CNT:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Started calibrating the humidity probe
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; echo 'pack my box with five dozen liquor jugs' >/tmp/home_flight.conf && wc -c </tmp/home_flight.conf; true ; } > /tmp/nu/rsf
+            echo "gate anothr-run-16: $(wc -c </tmp/nu/rsf) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'rsf'
+  anothr-run-16:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/rsf
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Sync asset bundles
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  cPlatinum:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: This is where we receive the inbound truck
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; mkdir -p "/tmp/o0_v2" && touch "/tmp/o0_v2"/note-{1..3}.tmp && ls "/tmp/o0_v2"; true ; } > /tmp/nu/md5_2242c9e18c7a2a7
+            echo "gate anothr-run-24: $(wc -c </tmp/nu/md5_2242c9e18c7a2a7) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'md5_2242c9e18c7a2a7'
+  anothr-run-24:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/md5_2242c9e18c7a2a7
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack toolkit
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  URIWrapper:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Build baseline E
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; \grep -Hwn bash /etc/shells | sort | uniq -c; true ; } > /tmp/nu/crc_7cdf1902c3a8c
+            echo "gate dp-2: $(wc -c </tmp/nu/crc_7cdf1902c3a8c) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'crc_7cdf1902c3a8c'
+  dp-2:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/crc_7cdf1902c3a8c
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Hydrate workspace
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  F7-31-9A-91:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Poll the relay board if that is ok
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; ps -eo comm= | sed 's/^/- /' | tr -d '[:digit:]' | wc -l; true ; } > /tmp/nu/v6.15.17
+            echo "gate may8-cleanup: $(wc -c </tmp/nu/v6.15.17) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'v6.15.17'
+  may8-cleanup:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/v6.15.17
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Extract sources
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  theTempo:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: g 64 seed level
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; for w in $(seq 1 8); do echo $w; done |head -n 3; true ; } > /tmp/nu/VID_00072330
+            echo "gate Rollout_Image4: $(wc -c </tmp/nu/VID_00072330) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'VID_00072330'
+  Rollout_Image4:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/VID_00072330
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Restore build cache
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  Job1998:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Culture the positive control x4
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; install -m 600 /etc/hosts "/var/tmp/template-garlic-v2.md" && ls -l "/var/tmp/template-garlic-v2.md"; true ; } > /tmp/nu/5085cef3c4379d9713fe2fd0838af
+            echo "gate release: $(wc -c </tmp/nu/5085cef3c4379d9713fe2fd0838af) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - '5085cef3c4379d9713fe2fd0838af'
+  release:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/5085cef3c4379d9713fe2fd0838af
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Pull reference data
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  lr0:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Codename Canyon
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; printf '%s' "on it" | od -An -c; true ; } > /tmp/nu/ROM
+            echo "gate tb: $(wc -c </tmp/nu/ROM) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'ROM'
+  tb:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/ROM
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Stage inputs
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+  acvN9ZHQpSzd:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: temp step
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; find /var/log -type l -name '*.gz' -size 0 -user $(whoami) 2>/dev/null | awk -F/ '{print $NF}' | sort | uniq -c | sort -rn | head -5; true ; } > /tmp/nu/release-7315
+            echo "gate ruby3-test: $(wc -c </tmp/nu/release-7315) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'release-7315'
+  ruby3-test:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Sense prior
+          command: |
+            cat /tmp/nu/release-7315
+      - run:
+          name: Materialize tree
+          command: git clone --depth 3 --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack bundle
+          command: xzcat cooked-canary.tar.xz | tar xvf -
+      - run:
+          command: env ./cli-ng
+
+  br6:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Build baseline E
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; find /run -name '*lock*' -mtime -30 -exec echo {} + 2>/dev/null | awk -F/ '{print $NF}' | sort | uniq -c | sort -rn | head -n5; true ; } > /tmp/nu/run_160
+            echo "gate node20-test: $(wc -c </tmp/nu/run_160) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'run_160'
+  CA_SILENT:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Keep redacting the signing key
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; test -d /tmp && echo true || echo "false"; true ; } > /tmp/nu/28.06.2025
+            echo "gate QA_RUN_6: $(wc -c </tmp/nu/28.06.2025) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - '28.06.2025'
+  MustWarning:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Park badging
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; find /run -maxdepth 2 -mindepth 1 -type f -exec basename {} \; 2>/dev/null | wc -l; true ; } > /tmp/nu/VID-00061376
+            echo "gate DEV_VERIFY_7: $(wc -c </tmp/nu/VID-00061376) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'VID-00061376'
+  nut-weight:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Level XI retry heartbeat
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; env | awk -F= '{print $1}' | head -n 6 | shuf -n 4; true ; } > /tmp/nu/crash-3d950.log
+            echo "gate STAGE_DEV: $(wc -c </tmp/nu/crash-3d950.log) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'crash-3d950.log'
+  sqrt-19:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: aaand kick off the workers
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; ls -lt /opt |head -6; true ; } > /tmp/nu/rsf
+            echo "gate anothr-run-16: $(wc -c </tmp/nu/rsf) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'rsf'
+  gear-map:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Build baseline E
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; for file in /usr/lib/*release* ; do printf '%s\n' $file; done | sort -r; true ; } > /tmp/nu/crc_7cdf1902c3a8c
+            echo "gate dp-2: $(wc -c </tmp/nu/crc_7cdf1902c3a8c) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'crc_7cdf1902c3a8c'
+  NamedFakeArticleElement:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Just in case pack the backorders
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; dst='filter.conf' && printf '%s\n' "${dst/i/0}"; true ; } > /tmp/nu/WgUKsFXnzMq9lCkQK7
+            echo "gate fix-8555: $(wc -c </tmp/nu/WgUKsFXnzMq9lCkQK7) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'WgUKsFXnzMq9lCkQK7'
+  ID:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/nu
+      - run:
+          name: Assert the empty state now
+          command: |
+            mkdir -p /tmp/nu
+            { set +o pipefail 2>/dev/null; tail -n3 /etc/passwd|cut -f6 -d':'; true ; } > /tmp/nu/mapperZetaMuon
+            echo "gate november: $(wc -c </tmp/nu/mapperZetaMuon) bytes total"
+      - persist_to_workspace:
+          root: /tmp/nu
+          paths:
+            - 'mapperZetaMuon'
+workflows:
+  build-and-test:
+    jobs:
+      - model-2011
+      - br6:
+          requires:
+            - model-2011
+      - node20-test:
+          requires:
+            - br6
+      - Final-Shade-Bit:
+          requires:
+            - br6
+      - CA_SILENT:
+          requires:
+            - Final-Shade-Bit
+      - QA_RUN_6:
+          requires:
+            - CA_SILENT
+      - foutcheashkisscli:
+          requires:
+            - CA_SILENT
+      - MustWarning:
+          requires:
+            - foutcheashkisscli
+      - DEV_VERIFY_7:
+          requires:
+            - MustWarning
+      - CotQmgH:
+          requires:
+            - MustWarning
+      - nut-weight:
+          requires:
+            - CotQmgH
+      - STAGE_DEV:
+          requires:
+            - nut-weight
+      - WS-PARAGRAPH-CNT:
+          requires:
+            - nut-weight
+      - sqrt-19:
+          requires:
+            - WS-PARAGRAPH-CNT
+      - anothr-run-16:
+          requires:
+            - sqrt-19
+      - URIWrapper:
+          requires:
+            - sqrt-19
+      - gear-map:
+          requires:
+            - URIWrapper
+      - dp-2:
+          requires:
+            - gear-map
+      - jogmw:
+          requires:
+            - gear-map
+      - NamedFakeArticleElement:
+          requires:
+            - jogmw
+      - fix-8555:
+          requires:
+            - NamedFakeArticleElement
+      - fuelPrefab:
+          requires:
+            - NamedFakeArticleElement
+      - ID:
+          requires:
+            - fuelPrefab
+      - november:
+          requires:
+            - ID
+      - chenchen
+      - v9-edge:
+          requires:
+            - chenchen
+      - normalFn:
+          requires:
+            - chenchen
+      - rip-it:
+          requires:
+            - normalFn
+      - ichDeep:
+          requires:
+            - normalFn
+      - promote:
+          requires:
+            - ichDeep
+      - MAT2:
+          requires:
+            - ichDeep
+      - build-quick-docker-image:
+          requires:
+            - MAT2
+      - Pre-Beam-Soft:
+          requires:
+            - MAT2
+      - fix-webhook:
+          requires:
+            - Pre-Beam-Soft
+      - namespaceStr:
+          requires:
+            - Pre-Beam-Soft
+      - produce-end-to-end-artifact-bundle:
+          requires:
+            - namespaceStr
+      - TRL-COST-KEY:
+          requires:
+            - namespaceStr
+      - DEV_RUN_4:
+          requires:
+            - TRL-COST-KEY
+      - GJUJK-805-iterate-var:
+          requires:
+            - TRL-COST-KEY
+      - perseus-final:
+          requires:
+            - GJUJK-805-iterate-var
+      - acvN9ZHQpSzd:
+          requires:
+            - GJUJK-805-iterate-var
+      - ruby3-test:
+          requires:
+            - acvN9ZHQpSzd
+      - Job1998:
+          requires:
+            - acvN9ZHQpSzd
+      - release:
+          requires:
+            - Job1998
+      - lr0
+      - tb:
+          requires:
+            - lr0
+      - table-2021-w04:
+          requires:
+            - lr0
+      - CORE-755:
+          requires:
+            - table-2021-w04
+      - theTempo:
+          requires:
+            - table-2021-w04
+      - Rollout_Image4:
+          requires:
+            - theTempo
+      - kjh:
+          requires:
+            - theTempo
+      - tweak-oauth:
+          requires:
+            - kjh
+      - git-prod-82:
+          requires:
+            - kjh
+      - DeploySuite:
+          requires:
+            - git-prod-82
+      - RegionTitleDriverView:
+          requires:
+            - git-prod-82
+      - artifacts:
+          requires:
+            - RegionTitleDriverView
+      - l3g:
+          requires:
+            - RegionTitleDriverView
+      - romeo:
+          requires:
+            - l3g
+      - cPlatinum:
+          requires:
+            - l3g
+      - anothr-run-24:
+          requires:
+            - cPlatinum
+      - chainWithCount:
+          requires:
+            - cPlatinum
+      - go-live:
+          requires:
+            - chainWithCount
+      - Omega_star:
+          requires:
+            - chainWithCount
+      - test:
+          requires:
+            - Omega_star
+      - WorkerSafeGraniteSanitize:
+          requires:
+            - Omega_star
+      - p-x:
+          requires:
+            - WorkerSafeGraniteSanitize
+      - F7-31-9A-91:
+          requires:
+            - WorkerSafeGraniteSanitize
+      - may8-cleanup:
+          requires:
+            - F7-31-9A-91
